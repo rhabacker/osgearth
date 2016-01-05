@@ -90,6 +90,8 @@ ADD_SUBDIRECTORY(osgearth_datetime)
 ADD_SUBDIRECTORY(osgearth_pagingtest)
 ADD_SUBDIRECTORY(osgearth_xfbtest)
 ADD_SUBDIRECTORY(osgearth_ephemeris)
+ADD_SUBDIRECTORY(osgearth_skyview)
+
 
 IF (Qt5Widgets_FOUND OR QT4_FOUND AND NOT ANDROID AND OSGEARTH_USE_QT)
     if(OSGEARTH_QT_BUILD_LEGACY_WIDGETS)
