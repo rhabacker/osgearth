@@ -25,7 +25,7 @@
 #include <osgEarth/Notify>
 #include <osgEarthUtil/ExampleResources>
 #include "SkyManipulator"
-#include "osgGA\FirstPersonManipulator"
+#include "osgGA/FirstPersonManipulator"
 
 
 #define LC "[viewer] "
