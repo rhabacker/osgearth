@@ -361,7 +361,7 @@ MapNode::init()
 
     // Add in some global uniforms
     stateset->addUniform( new osg::Uniform("oe_isGeocentric", _map->isGeocentric()) );
-    if ( _map->isGeocentric() )
+    if ( _map->isGeocentric() && _map->getSRS() )
     {
         OE_INFO << LC << "Adding ellipsoid uniforms.\n";
 
