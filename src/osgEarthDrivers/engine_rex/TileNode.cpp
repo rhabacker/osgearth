@@ -24,6 +24,7 @@
 #include "LoadTileData"
 #include "SelectionInfo"
 #include "ElevationTextureUtils"
+#include "UniformCache"
 
 #include <osgEarth/CullingUtils>
 #include <osgEarth/ImageUtils>
@@ -648,7 +649,7 @@ TileNode::inheritState(EngineContext* context)
                 // Add a new uniform with the scale/bias'd matrix:
                 osg::StateSet* stateSet = getOrCreateStateSet();
                 stateSet->removeUniform( binding->matrixName() );
-                stateSet->addUniform( context->getOrCreateMatrixUniform(binding->matrixName(), matrix) );
+                stateSet->addUniform( UniformCache::getOrCreateMatrixUniform(binding->matrixName(), matrix) );
                 changesMade = true;
             }
 

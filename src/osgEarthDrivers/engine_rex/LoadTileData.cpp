@@ -18,6 +18,7 @@
 */
 #include "LoadTileData"
 #include "MPTexture"
+#include "UniformCache"
 #include <osgEarth/TerrainEngineNode>
 #include <osgEarth/Terrain>
 #include <osgEarth/Registry>
@@ -160,7 +161,7 @@ LoadTileData::invoke()
 
                     stateSet->removeUniform(binding->matrixName());
 
-                    stateSet->addUniform( _context->getOrCreateMatrixUniform(
+                    stateSet->addUniform( UniformCache::getOrCreateMatrixUniform(
                         binding->matrixName(),
                         osg::Matrixf::identity() ) );    
                 }
@@ -181,7 +182,7 @@ LoadTileData::invoke()
 
                     stateSet->removeUniform(binding->matrixName());
 
-                    stateSet->addUniform( _context->getOrCreateMatrixUniform(
+                    stateSet->addUniform( UniformCache::getOrCreateMatrixUniform(
                         binding->matrixName(),
                         osg::Matrixf::identity() ) );
                 }
@@ -207,7 +208,7 @@ LoadTileData::invoke()
 
                         stateSet->removeUniform(binding->matrixName());
 
-                        stateSet->addUniform( _context->getOrCreateMatrixUniform(
+                        stateSet->addUniform( UniformCache::getOrCreateMatrixUniform(
                             binding->matrixName(),
                             osg::Matrixf::identity() ) );
                     }

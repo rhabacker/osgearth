@@ -37,7 +37,8 @@ SET(TARGET_SRC
     TileNode.cpp
     TileNodeRegistry.cpp
     Loader.cpp
-    Unloader.cpp
+    UniformCache.cpp
+    Unloader.cpp    
     ${SHADERS_CPP}
 )
 
@@ -58,6 +59,7 @@ SET(TARGET_H
     TileNode
     TileNodeRegistry
     Loader
+    UniformCache
     Unloader
 	SelectionInfo
 )
