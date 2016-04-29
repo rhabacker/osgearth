@@ -98,13 +98,12 @@ TileNodeRegistry::setDirty(const GeoExtent& extent,
 void
 TileNodeRegistry::addSafely(TileNode* tile)
 {
-    _tiles.insert( tile->getTileKey(), tile );
-    //_tiles[ tile->getTileKey() ] = tile;
+    _tiles.insert( tile->getKey(), tile );
     if ( _revisioningEnabled )
         tile->setMapRevision( _maprev );
 
     // check for tiles that are waiting on this tile, and notify them!
-    TileKeyOneToMany::iterator notifier = _notifiers.find( tile->getTileKey() );
+    TileKeyOneToMany::iterator notifier = _notifiers.find( tile->getKey() );
     if ( notifier != _notifiers.end() )
     {
         TileKeySet& listeners = notifier->second;
@@ -173,7 +172,7 @@ TileNodeRegistry::remove( TileNode* tile )
     if ( tile )
     {
         Threading::ScopedWriteLock exclusive( _tilesMutex );
-        removeSafely( tile->getTileKey() );
+        removeSafely( tile->getKey() );
     }
 }
 
@@ -273,16 +272,16 @@ TileNodeRegistry::listenFor(const TileKey& tileToWaitFor, TileNode* waiter)
     TileNode* tile = _tiles.find( tileToWaitFor );
     if ( tile )
     {
-        OE_DEBUG << LC << waiter->getTileKey().str() << " listened for " << tileToWaitFor.str()
+        OE_DEBUG << LC << waiter->getKey().str() << " listened for " << tileToWaitFor.str()
             << ", but it was already in the repo.\n";
 
         waiter->notifyOfArrival( tile );
     }
     else
     {
-        OE_DEBUG << LC << waiter->getTileKey().str() << " listened for " << tileToWaitFor.str() << ".\n";
+        OE_DEBUG << LC << waiter->getKey().str() << " listened for " << tileToWaitFor.str() << ".\n";
         //_notifications[tileToWaitFor].push_back( waiter->getKey() );
-        _notifiers[tileToWaitFor].insert( waiter->getTileKey() );
+        _notifiers[tileToWaitFor].insert( waiter->getKey() );
     }
 }
         
@@ -291,6 +290,6 @@ TileNodeRegistry::takeAny()
 {
     Threading::ScopedWriteLock exclusive( _tilesMutex );
     osg::ref_ptr<TileNode> tile = _tiles.begin()->second.tile.get();
-    removeSafely( tile->getTileKey() );
+    removeSafely( tile->getKey() );
     return tile.release();
 }

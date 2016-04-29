@@ -68,8 +68,8 @@ const MapFrame& EngineContext::getMapFrame()
 void
 EngineContext::unloadChildrenOf(const TileNode* tile)
 {
-   _tilesWithChildrenToUnload.push_back( tile->getTileKey() );
-   OE_INFO << LC << "Unload children of: " << tile->getTileKey().str() << "\n";
+   _tilesWithChildrenToUnload.push_back( tile->getKey() );
+   OE_INFO << LC << "Unload children of: " << tile->getKey().str() << "\n";
 }
 
 void
@@ -110,7 +110,7 @@ namespace
             for(unsigned i=0; i<4; ++i) {
                 const TileNode* tile = tiles.at(index[i]%s);
                 if ( tile->areSubTilesDormant(_stamp) )
-                    _keys.push_back( tile->getTileKey() );
+                    _keys.push_back( tile->getKey() );
             }
         }
     };

@@ -284,7 +284,7 @@ TileNode::getVisibilityRangeHint(EngineContext* context) const
     unsigned firstLOD = context->_options.firstLOD().get();
     float mtrf = context->_options.minTileRangeFactor().get();
 
-    if (getTileKey().getLOD()!=firstLOD)
+    if (getKey().getLOD()!=firstLOD)
     {
         OE_INFO << LC <<"Error: Visibility Range hint can be computed only using the first LOD"<<std::endl;
         return -1;
@@ -445,7 +445,7 @@ TileNode::cull(osgUtil::CullVisitor* cv)
 
        
     // Run any patch callbacks.
-    context->invokeTilePatchCallbacks( cv, getTileKey(), _payloadStateSet.get(), _patch.get() );
+    context->invokeTilePatchCallbacks( cv, getKey(), _payloadStateSet.get(), _patch.get() );
 
     // If this tile is marked dirty, try loading data.
     if ( _dirty && canLoadData )
@@ -574,7 +574,7 @@ TileNode::createChildren(EngineContext* context)
         }
 
         // Build the surface geometry:
-        node->create( getTileKey().createChildKey(quadrant), context );
+        node->create( getKey().createChildKey(quadrant), context );
 
         // Add to the scene graph.
         addChild( node );
@@ -593,7 +593,7 @@ TileNode::inheritState(EngineContext* context)
     bool changesMade = false;
 
     // which quadrant is this tile in?
-    unsigned quadrant = getTileKey().getQuadrant();
+    unsigned quadrant = getKey().getQuadrant();
 
     // default inheritance of the elevation data for bounding purposes:
     osg::ref_ptr<const osg::Image> elevRaster;
@@ -716,7 +716,7 @@ TileNode::load(osg::NodeVisitor& nv)
     // Construct the load PRIORITY: 0=lowest, 1=highest.
     
     const SelectionInfo& si = context->getSelectionInfo();
-    int lod     = getTileKey().getLOD();
+    int lod     = getKey().getLOD();
     int numLods = si.numLods();
     
     // LOD priority is in the range [0..numLods]

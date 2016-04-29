@@ -92,7 +92,7 @@ LoadTileData::invoke()
         // Assemble all the components necessary to display this tile
         _model = _context->getEngine()->createTileModel(
             _context->getMapFrame(),
-            tilenode->getTileKey(),
+            tilenode->getKey(),
             progress ); // progress
 
         // Prep the stateset for merging (and for GL pre-compile).

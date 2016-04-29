@@ -38,7 +38,7 @@ namespace osgEarth { namespace Drivers { namespace MPTerrainEngine
     {
     public: // osgEarth::TerrainTileNode
         
-        const TileKey& getKey() const { return _key; }
+        virtual const TileKey& getKey() const { return _key; }
 
         osg::Texture* getElevationTexture() const;
 
