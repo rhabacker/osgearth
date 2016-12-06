@@ -182,43 +182,49 @@ public:
         {
             //TODO: "layers" mights be a comma-separated list. need to loop through and
             //combine the extents?? yes
-            WMSLayer* layer = capabilities->getLayerByName( _options.layers().value() );
-            if ( layer )
+            std::vector<std::string> layers;
+            StringTokenizer st;
+            st.addDelims(",", false);
+            st.tokenize(_options.layers().value(), layers);
+            for (int i = 0; i < layers.size(); i++)
             {
-                double minx, miny, maxx, maxy;                
-                minx = miny = maxx = maxy = 0;
-
-                //Check to see if the profile is equivalent to global-geodetic
-                if (wms_srs->isGeographic())
+                WMSLayer* layer = capabilities->getLayerByName(layers[i]);
+                if ( layer )
                 {
-                    //Try to get the lat lon extents if they are provided
-                    layer->getLatLonExtents(minx, miny, maxx, maxy);
+                    double minx, miny, maxx, maxy;
+                    minx = miny = maxx = maxy = 0;
 
-                    //If we still don't have any extents, just default to global geodetic.
-                    if (!result.valid() && minx == 0 && miny == 0 && maxx == 0 && maxy == 0)
+                    //Check to see if the profile is equivalent to global-geodetic
+                    if (wms_srs->isGeographic())
                     {
-                        result = osgEarth::Registry::instance()->getGlobalGeodeticProfile();
+                        //Try to get the lat lon extents if they are provided
+                        layer->getLatLonExtents(minx, miny, maxx, maxy);
+
+                        //If we still don't have any extents, just default to global geodetic.
+                        if (!result.valid() && minx == 0 && miny == 0 && maxx == 0 && maxy == 0)
+                        {
+                            result = osgEarth::Registry::instance()->getGlobalGeodeticProfile();
+                        }
                     }
-                }	
 
-                if (minx == 0 && miny == 0 && maxx == 0 && maxy == 0)
-                {
-                    layer->getExtents(minx, miny, maxx, maxy);
+                    if (minx == 0 && miny == 0 && maxx == 0 && maxy == 0)
+                    {
+                        layer->getExtents(minx, miny, maxx, maxy);
+                    }
+
+                    if (!result.valid())
+                    {
+                        result = Profile::create( _srsToUse, minx, miny, maxx, maxy );
+                    }
+
+                    //Add the layer extents to the list of valid areas
+                    if (minx != 0 || maxx != 0 || miny != 0 || maxy != 0)
+                    {
+                        GeoExtent extent( result->getSRS(), minx, miny, maxx, maxy);
+                        getDataExtents().push_back( DataExtent(extent, 0) );
+                    }
                 }
-
-
-                if (!result.valid())
-                {
-                    result = Profile::create( _srsToUse, minx, miny, maxx, maxy );
-                }
-
-                //Add the layer extents to the list of valid areas
-                if (minx != 0 || maxx != 0 || miny != 0 || maxy != 0)
-                {
-                    GeoExtent extent( result->getSRS(), minx, miny, maxx, maxy);
-                    getDataExtents().push_back( DataExtent(extent, 0) );
-                }
-            }
+            } // for
         }
 
         // Last resort: create a global extent profile (only valid for global maps)
