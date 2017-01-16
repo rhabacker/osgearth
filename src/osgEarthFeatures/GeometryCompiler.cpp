@@ -21,6 +21,7 @@
 #include <osgEarthFeatures/BuildTextFilter>
 #include <osgEarthFeatures/AltitudeFilter>
 #include <osgEarthFeatures/CentroidFilter>
+#include <osgEarthFeatures/FirstVertexFilter>
 #include <osgEarthFeatures/ExtrudeGeometryFilter>
 #include <osgEarthFeatures/ScatterFilter>
 #include <osgEarthFeatures/SubstituteModelFilter>
@@ -404,9 +405,16 @@ GeometryCompiler::compile(FeatureList&          workingSet,
         }
         else if ( instance->placement() == InstanceSymbol::PLACEMENT_CENTROID )
         {
-            CentroidFilter centroid;
-            localCX = centroid.push( workingSet, localCX );
+            CentroidFilter fvfilter;
+            localCX = fvfilter.push( workingSet, localCX );
             if ( trackHistory ) history.push_back( "centroid" );
+        }
+        else if ( instance->placement() == InstanceSymbol::PLACEMENT_FIRSTVERTEX )
+        {
+            FirstVertexFilter fvfilter;
+            localCX = fvfilter.push( workingSet, localCX );
+            OE_INFO << LC << "Placing model at First vertex";
+            if ( trackHistory ) history.push_back( "first" );
         }
 
         if ( altRequired )
