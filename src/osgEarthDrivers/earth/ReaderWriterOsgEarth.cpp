@@ -21,13 +21,19 @@
 #include <osgEarth/MapNode>
 #include <osgEarth/Registry>
 #include <osgEarth/XmlUtils>
-#include <osgDB/FileNameUtils>
+#include <osgEarth/XmlUtils>
+#include <osgEarthSymbology/Color>
 #include <osgDB/FileUtils>
 #include <osgDB/Registry>
 #include <string>
 #include <sstream>
 #include <osgEarthUtil/Common>
+#include <osgEarthUtil/Controls>
+#include <osgEarthUtil/EarthManipulator>
+#include <osgViewer/Viewer>
 
+using namespace osgEarth::Util::Controls;
+using namespace osgEarth::Util;
 using namespace osgEarth_osgearth;
 using namespace osgEarth;
 
@@ -68,6 +74,37 @@ using namespace osgEarth;
 // cause the writer to try making absolute paths relative to the new save location.
 #define EARTH_REWRITE_ABSOLUTE_PATHS "RewriteAbsolutePaths"
 
+
+/**
+ * Toggles the main control canvas on and off.
+ */
+struct ToggleCanvasEventHandler : public osgGA::GUIEventHandler
+{
+    ToggleCanvasEventHandler(osg::Node* canvas, char key) :
+        _canvas(canvas), _key(key)
+    {
+    }
+
+    bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
+    {
+        if (ea.getEventType() == osgGA::GUIEventAdapter::KEYDOWN)
+        {
+            if (ea.getKey() == _key)
+            {
+                osg::ref_ptr< osg::Node > safeNode = _canvas.get();
+                if (safeNode.valid())
+                {
+                    safeNode->setNodeMask( safeNode->getNodeMask() ? 0 : ~0 );
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    osg::observer_ptr<osg::Node> _canvas;
+    char _key;
+};
 
 namespace
 {
@@ -299,6 +336,44 @@ class ReaderWriterEarth : public osgDB::ReaderWriter
                 {
                     mapNode->getMap()->setCache( cacheSettings->getCache() );
                     OE_INFO << LC << "Applied user-supplied cache to the Map\n";
+                }
+            }
+
+            osgViewer::Viewer *view = dynamic_cast<osgViewer::Viewer*>(osgDB::Registry::instance()->getFromObjectCache("__viewer__"));
+            if (view)
+            {
+                // Install a new Canvas for our UI controls, or use one that already exists.
+                ControlCanvas* canvas = ControlCanvas::getOrCreate( view );
+
+                Container* mainContainer;
+                mainContainer = new VBox();
+                mainContainer->setAbsorbEvents( true );
+                mainContainer->setBackColor( Color(Color::Black, 0.8) );
+                mainContainer->setHorizAlign( Control::ALIGN_LEFT );
+                mainContainer->setVertAlign( Control::ALIGN_BOTTOM );
+                canvas->addControl( mainContainer );
+
+                // Add an event handler to toggle the canvas with a key press;
+                view->addEventHandler(new ToggleCanvasEventHandler(canvas, 'y'));
+                // install our default manipulator (do this before calling load)
+                view->setCameraManipulator( new EarthManipulator );
+
+                // Hook up the extensions!
+                for(std::vector<osg::ref_ptr<Extension> >::const_iterator eiter = mapNode->getExtensions().begin();
+                    eiter != mapNode->getExtensions().end();
+                    ++eiter)
+                {
+                    Extension* e = eiter->get();
+
+                    // Check for a View interface:
+                    ExtensionInterface<osg::View>* viewIF = ExtensionInterface<osg::View>::get( e );
+                    if ( viewIF )
+                        viewIF->connect( view );
+
+                    // Check for a Control interface:
+                    ExtensionInterface<Control>* controlIF = ExtensionInterface<Control>::get( e );
+                    if ( controlIF )
+                        controlIF->connect( mainContainer );
                 }
             }
 
