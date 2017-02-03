@@ -61,6 +61,7 @@ usage( const std::string& msg = "" )
         << "            <earth_file>                    : earth file defining layers to export (required)\n"
         << "            --out <path>                    : root output folder of the TMS repo (required)\n"
         << "            [--bounds xmin ymin xmax ymax]* : bounds to package (in map coordinates; default=entire map)\n"
+        << "            [--min-level <num>]             : min LOD level for tiles (all layers; default=inf)\n"
         << "            [--max-level <num>]             : max LOD level for tiles (all layers; default=inf)\n"
         << "            [--out-earth <earthfile>]       : export an earth file referencing the new repo\n"
         << "            [--ext <extension>]             : overrides the image file extension (e.g. jpg)\n"
@@ -73,6 +74,9 @@ usage( const std::string& msg = "" )
         << "            [--mt]                          ; Use multithreading to process the tiles." << std::endl
         << "            [--concurrency]                 ; The number of threads or processes to use if --mp or --mt are provided." << std::endl
         << "            [--alpha-mask]                  ; Mask out imagery that isn't in the provided extents." << std::endl
+        << "            [--tiles <layerlist>]           : List of tiles." << std::endl
+        << "            [--image <index>]               : package specific image layer at index <index>." << std::endl
+        << "            [--elevation <index>]           : package elevation layer at index <index>." << std::endl
         << std::endl
         << "            [--verbose]                     ; Displays progress of the operation" << std::endl;
 
