@@ -69,11 +69,11 @@ usage( const std::string& msg = "" )
         << "            [--keep-empties]                : writes out fully transparent image tiles (normally discarded)\n"
         << "            [--continue-single-color]       : continues to subdivide single color tiles, subdivision typicall stops on single color images\n"
         << "            [--elevation-pixel-depth]       : pixeldepth for elevations\n"
-        << "            [--db-options]                : db options string to pass to the image writer in quotes (e.g., \"JPEG_QUALITY 60\")\n"
-        << "            [--mp]                          ; Use multiprocessing to process the tiles.  Useful for GDAL sources as this avoids the global GDAL lock" << std::endl
-        << "            [--mt]                          ; Use multithreading to process the tiles." << std::endl
-        << "            [--concurrency]                 ; The number of threads or processes to use if --mp or --mt are provided." << std::endl
-        << "            [--alpha-mask]                  ; Mask out imagery that isn't in the provided extents." << std::endl
+        << "            [--db-options]                  : db options string to pass to the image writer in quotes (e.g., \"JPEG_QUALITY 60\")\n"
+        << "            [--mp]                          : Use multiprocessing to process the tiles.  Useful for GDAL sources as this avoids the global GDAL lock" << std::endl
+        << "            [--mt]                          : Use multithreading to process the tiles." << std::endl
+        << "            [--concurrency]                 : The number of threads or processes to use if --mp or --mt are provided." << std::endl
+        << "            [--alpha-mask]                  : Mask out imagery that isn't in the provided extents." << std::endl
         << "            [--tiles <layerlist>]           : List of tiles." << std::endl
         << "            [--image <index>]               : package specific image layer at index <index>." << std::endl
         << "            [--elevation <index>]           : package elevation layer at index <index>." << std::endl
